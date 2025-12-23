@@ -1,3 +1,4 @@
+import ReverseVideoMaker from "./ReverseVideoMaker";
 import WebCodecsVideoPlayer from "./WebCodecsVideoPlayer";
 
 export default function Home() {
@@ -6,6 +7,7 @@ export default function Home() {
       <h1 className="text-4xl">WebCodecs + WebM サイト</h1>
 
       <WebCodecsVideoPlayer />
+      <ReverseVideoMaker />
     </div>
   )
 }

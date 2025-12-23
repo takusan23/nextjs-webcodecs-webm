@@ -7,25 +7,25 @@ export default function WebCodecsVideoPlayer() {
 
     /** 再生を始める */
     async function startVideoPlay(file?: File) {
-if (!file) return
-if (!canvasRef.current) return
+        if (!file) return
+        if (!canvasRef.current) return
 
-// Kotlin Multiplatform で出来たライブラリをロード
-// 絶対クライアントが良いので動的ロードする
-const {
-    parseWebm,
-    getVideoHeightFromWebmParseResult,
-    getVideoWidthFromWebmParseResult,
-    getVideoEncodeDataFromWebmParseResult,
-    getTimeFromEncodeData,
-    getEncodeDataFromEncodeData,
-    isKeyFrameFromEncodeData
-} = await import("himari-webm-kotlin-multiplatform")
+        // Kotlin Multiplatform で出来たライブラリをロード
+        // 絶対クライアントが良いので動的ロードする
+        const {
+            parseWebm,
+            getVideoHeightFromWebmParseResult,
+            getVideoWidthFromWebmParseResult,
+            getVideoEncodeDataFromWebmParseResult,
+            getTimeFromEncodeData,
+            getEncodeDataFromEncodeData,
+            isKeyFrameFromEncodeData
+        } = await import("himari-webm-kotlin-multiplatform")
 
-// WebM をパース
-const arrayBuffer = await file.arrayBuffer()
-const intArray = new Int8Array(arrayBuffer)
-const parseRef = parseWebm(intArray as any)
+        // WebM をパース
+        const arrayBuffer = await file.arrayBuffer()
+        const intArray = new Int8Array(arrayBuffer)
+        const parseRef = parseWebm(intArray as any)
 
         // 動画の縦横サイズを出す
         const videoHeight = Number(getVideoHeightFromWebmParseResult(parseRef))
@@ -100,6 +100,9 @@ const parseRef = parseWebm(intArray as any)
             const delayMs = (startTime + (videoFrame.timestamp / 1_000)) - Date.now()
             await new Promise((resolve) => setTimeout(resolve, delayMs))
         }
+
+        // おしまい
+        videoDecoder.close()
     }
 
     return (
