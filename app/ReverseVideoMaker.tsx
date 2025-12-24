@@ -1,9 +1,10 @@
 'use client'
 
-import { useRef } from "react"
+import { useRef, useState } from "react"
 
 export default function ReverseVideoMaker() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
+    const [enableSoftware, setEnableSoftware] = useState(false)
 
     /** 処理を開始する */
     async function process(file?: File) {
@@ -92,7 +93,8 @@ export default function ReverseVideoMaker() {
             videoDecoder.configure({
                 codec: 'vp09.00.10.08',
                 codedHeight: videoHeight,
-                codedWidth: videoWidth
+                codedWidth: videoWidth,
+                hardwareAcceleration: enableSoftware ? 'prefer-software' : 'no-preference'
             })
             const videoEncoder = new VideoEncoder({
                 error: (err) => { alert('映像エンコーダーでエラーが発生しました') },
@@ -102,7 +104,8 @@ export default function ReverseVideoMaker() {
                 codec: 'vp09.00.10.08',
                 height: videoHeight,
                 width: videoWidth,
-                framerate: 30
+                framerate: 30,
+                hardwareAcceleration: enableSoftware ? 'prefer-software' : 'no-preference'
             })
 
             // コールバックを Proimise にする関数
@@ -330,6 +333,15 @@ export default function ReverseVideoMaker() {
             <h2 className="text-2xl text-red-600">
                 WebCodecs で逆再生動画を作る
             </h2>
+
+            <div>
+                <input
+                    type="checkbox"
+                    name="software"
+                    checked={enableSoftware}
+                    onChange={(ev) => setEnableSoftware(ev.currentTarget.checked)} />
+                <label htmlFor="software">ソフトウェアデコーダー・エンコーダーを利用する（途中で止まってしまう場合は試してください）</label>
+            </div>
 
             <canvas
                 ref={canvasRef}
